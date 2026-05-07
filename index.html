@@ -272,6 +272,16 @@
             direction: ltr;
         }
 
+        .leaderboard-empty {
+            text-align: center;
+            color: #9ca3af;
+            padding: 2rem 1rem;
+            font-style: italic;
+            background: #0f172a;
+            border-radius: 1rem;
+            margin: 1rem 0;
+        }
+
         .reset-leaderboard {
             background: none;
             border: 1px solid #475569;
@@ -348,7 +358,7 @@
 <body>
 <div class="app-container" id="appRoot"></div>
 <script>
-    // =============== 15 سؤالاً جديداً ومميزاً من القائمة الشاملة ===============
+    // =============== 15 سؤالاً مميزاً ===============
     const QUIZ_SET = [
         { category: "🔬 علوم", question: "ما هو المعدن السائل في درجة حرارة الغرفة؟", options: ["الزئبق", "الذهب", "الألماس", "الحديد"], correct: 0 },
         { category: "🐆 علوم", question: "ما هو أسرع حيوان بري في العالم؟", options: ["الأسد", "الفهد (الشيتا)", "النمر", "الغزال"], correct: 1 },
@@ -367,10 +377,8 @@
         { category: "⛰️ علوم", question: "ما هو الصخر الناتج عن تبريد الماغما أو اللافا؟", options: ["الصخر الرسوبي", "الصخر الناري", "الصخر المتحول", "الحجر الجيري"], correct: 1 }
     ];
 
-    // نسخة عشوائية في كل مرة
     let currentQuestions = [...QUIZ_SET];
     
-    // حالة الاختبار
     let currentIndex = 0;
     let userScore = 0;
     let quizActive = true;
@@ -386,7 +394,7 @@
 
     const appContainer = document.getElementById('appRoot');
 
-    // حفظ و تحميل لوحة الصدارة
+    // حفظ و تحميل لوحة الصدارة (بدون أسماء وهمية)
     function saveLeaderboardToLocal() {
         localStorage.setItem('quizSuperLeaderboard', JSON.stringify(leaderboard));
     }
@@ -400,12 +408,9 @@
                 leaderboard.sort((a,b) => (b.score - a.score) || (a.totalTimeSecs - b.totalTimeSecs));
             } catch(e) { leaderboard = []; }
         }
+        // تم إزالة جميع الأسماء الوهمية - اللوحة تبدأ فارغة تماماً
         if (!leaderboard.length) {
-            leaderboard = [
-                { playerName: "حمد السريع", score: 13, totalTimeSecs: 48 },
-                { playerName: "ليلى التحدي", score: 14, totalTimeSecs: 39 },
-                { playerName: "فيصل", score: 12, totalTimeSecs: 55 }
-            ];
+            leaderboard = []; // فارغة بدون عينات
             saveLeaderboardToLocal();
         }
     }
@@ -554,7 +559,7 @@
         const leaderDiv = document.querySelector('.leaderboard-panel');
         if (!leaderDiv) return;
         if (leaderboard.length === 0) {
-            leaderDiv.innerHTML = `<div class="leaderboard-header">🏅 لوحة الصدارة 🏅</div><div class="leaderboard-empty">لا توجد نتائج بعد.</div><button id="resetLeaderBtn" class="reset-leaderboard">🗑️ إعادة تعيين</button>`;
+            leaderDiv.innerHTML = `<div class="leaderboard-header">🏅 لوحة الصدارة 🏅</div><div class="leaderboard-empty">✨ لا توجد نتائج بعد. كن أول من يلعب ويظهر اسمه هنا! ✨</div><button id="resetLeaderBtn" class="reset-leaderboard">🗑️ إعادة تعيين اللوحة</button>`;
             const resetBtn = document.getElementById('resetLeaderBtn');
             if (resetBtn) resetBtn.onclick = () => { leaderboard = []; saveLeaderboardToLocal(); renderLeaderboard(); };
             return;
@@ -563,7 +568,7 @@
         leaderboard.slice(0,10).forEach((entry, idx) => {
             listHtml += `<li class="leaderboard-item"><div class="rank">${idx+1}</div><div class="player-name">${escapeHtml(entry.playerName)}</div><div class="player-score">${entry.score}</div><div class="player-time">⏱️ ${entry.totalTimeSecs}s</div></li>`;
         });
-        listHtml += `</ul><button id="resetLeaderBtn" class="reset-leaderboard">إعادة تعيين اللوحة</button>`;
+        listHtml += `</ul><button id="resetLeaderBtn" class="reset-leaderboard">🗑️ إعادة تعيين اللوحة</button>`;
         leaderDiv.innerHTML = listHtml;
         const resetBtn = document.getElementById('resetLeaderBtn');
         if (resetBtn) resetBtn.onclick = () => { leaderboard = []; saveLeaderboardToLocal(); renderLeaderboard(); };
@@ -610,11 +615,11 @@
 
     async function init() {
         buildUI();
-        loadLeaderboardFromLocal();
+        loadLeaderboardFromLocal();  // ستكون فارغة تماماً بدون أسماء وهمية
         await askPlayerName();
         shuffleArray(currentQuestions);
         resetQuizSession();
-        renderLeaderboard();
+        renderLeaderboard();  // تظهر رسالة "لا توجد نتائج بعد"
     }
     init();
 </script>
