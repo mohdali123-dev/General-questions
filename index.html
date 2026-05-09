@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>اختبر معلوماتك | تحدّي 15 سؤالاً مميزاً</title>
+    <title>اختبر معلوماتك | لوحة صدارة عالمية</title>
     <style>
         * {
             margin: 0;
@@ -38,7 +38,6 @@
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
         .hero p {
@@ -61,7 +60,6 @@
             backdrop-filter: blur(12px);
             border-radius: 2rem;
             padding: 1.8rem;
-            box-shadow: 0 20px 35px -12px black;
             border: 1px solid rgba(251, 191, 36, 0.4);
         }
 
@@ -73,7 +71,6 @@
             border-radius: 2rem;
             padding: 1.5rem;
             border: 1px solid #374151;
-            box-shadow: 0 15px 30px -10px black;
         }
 
         .quiz-meta {
@@ -94,7 +91,6 @@
             padding: 0.3rem 1.2rem;
             border-radius: 40px;
             font-size: 0.85rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
 
         .score-timer {
@@ -220,10 +216,6 @@
             color: #facc15;
             text-align: center;
             margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
         }
 
         .leaderboard-list {
@@ -241,7 +233,6 @@
             display: flex;
             align-items: center;
             gap: 0.7rem;
-            font-weight: 500;
             border-right: 3px solid #facc15;
         }
 
@@ -269,7 +260,6 @@
         .player-time {
             font-size: 0.75rem;
             color: #94a3b8;
-            direction: ltr;
         }
 
         .leaderboard-empty {
@@ -282,22 +272,10 @@
             margin: 1rem 0;
         }
 
-        .reset-leaderboard {
-            background: none;
-            border: 1px solid #475569;
-            color: #cbd5e6;
-            padding: 0.4rem 1rem;
-            border-radius: 2rem;
-            width: 100%;
-            cursor: pointer;
-            font-size: 0.8rem;
-            margin-top: 1rem;
-            transition: 0.2s;
-        }
-
-        .reset-leaderboard:hover {
-            background: #334155;
+        .loading {
+            text-align: center;
             color: #facc15;
+            padding: 1rem;
         }
 
         .name-overlay {
@@ -357,80 +335,73 @@
 </head>
 <body>
 <div class="app-container" id="appRoot"></div>
+
 <script>
-    // =============== 15 سؤالاً مميزاً ===============
+    // ================== إعدادات Supabase (ضع قيمك هنا) ==================
+    const SUPABASE_URL = "https://tpnzhzpydszmiwncckk.supabase.co";  // ضع Project URL هنا
+    const SUPABASE_ANON_KEY = "sb_publishable_lpE_UQYr3JDxM-eb2l2zUg_SdHXCT2B";  // ضع anon key هنا
+    // ==================================================================
+
     const QUIZ_SET = [
         { category: "🔬 علوم", question: "ما هو المعدن السائل في درجة حرارة الغرفة؟", options: ["الزئبق", "الذهب", "الألماس", "الحديد"], correct: 0 },
-        { category: "🐆 علوم", question: "ما هو أسرع حيوان بري في العالم؟", options: ["الأسد", "الفهد (الشيتا)", "النمر", "الغزال"], correct: 1 },
+        { category: "🐆 علوم", question: "ما هو أسرع حيوان بري في العالم؟", options: ["الأسد", "الفهد", "النمر", "الغزال"], correct: 1 },
         { category: "📜 تاريخ", question: "في أي عام انتهت الحرب العالمية الثانية؟", options: ["1943", "1944", "1945", "1946"], correct: 2 },
-        { category: "🌎 تاريخ", question: "من هو مكتشف أمريكا؟", options: ["فاسكو دا غاما", "كريستوفر كولومبوس", "ماجلان", "ماركو بولو"], correct: 1 },
-        { category: "⚽ رياضة", question: "كم عدد لاعبي فريق كرة القدم في الملعب (أساسي)؟", options: ["10", "11", "12", "9"], correct: 1 },
-        { category: "🐫 رياضة وتراث", question: "ما هو الحيوان الذي يُلقب بسفينة الصحراء؟", options: ["الحصان", "الجمل", "النعامة", "الضبع"], correct: 1 },
+        { category: "🌎 تاريخ", question: "من هو مكتشف أمريكا؟", options: ["فاسكو دا غاما", "كولومبوس", "ماجلان", "ماركو بولو"], correct: 1 },
+        { category: "⚽ رياضة", question: "كم عدد لاعبي كرة القدم في الملعب؟", options: ["10", "11", "12", "9"], correct: 1 },
+        { category: "🐫 رياضة", question: "ما هو الحيوان الملقب بسفينة الصحراء؟", options: ["الحصان", "الجمل", "النعامة", "الضبع"], correct: 1 },
         { category: "🎮 ألغاز", question: "ما هو الشيء الذي له أسنان ولا يعض؟", options: ["المشط", "المقص", "السكين", "المنشار"], correct: 0 },
         { category: "⏳ ألغاز", question: "ما هو الشيء الذي كلما زاد نقص؟", options: ["العمر", "المال", "الوقت", "الحلم"], correct: 0 },
-        { category: "🌿 علوم", question: "ما الغاز الذي تمتصه النباتات للقيام بعملية البناء الضوئي؟", options: ["الأكسجين", "ثاني أكسيد الكربون", "النيتروجين", "الهيدروجين"], correct: 1 },
+        { category: "🌿 علوم", question: "ما الغاز الذي تمتصه النباتات للبناء الضوئي؟", options: ["الأكسجين", "ثاني أكسيد الكربون", "النيتروجين", "الهيدروجين"], correct: 1 },
         { category: "🗾 تاريخ", question: "ما هي عاصمة اليابان؟", options: ["بكين", "سيؤول", "طوكيو", "بانكوك"], correct: 2 },
-        { category: "🏙️ رياضة/عمارة", question: "ما هو أطول بناء في العالم حالياً؟", options: ["برج خليفة", "برج شنغهاي", "برج إيفل", "مبنى تايبيه 101"], correct: 0 },
-        { category: "💧 ألغاز", question: "ما هو الشيء الذي يمشي بلا أرجل؟", options: ["الريح", "الوقت / النهر", "الظل", "الصوت"], correct: 1 },
+        { category: "🏙️ عمارة", question: "ما هو أطول مبنى في العالم؟", options: ["برج خليفة", "برج شنغهاي", "برج إيفل", "تايبيه 101"], correct: 0 },
+        { category: "💧 ألغاز", question: "ما الذي يمشي بلا أرجل؟", options: ["الريح", "النهر", "الظل", "الصوت"], correct: 1 },
         { category: "🪐 علوم", question: "كم كوكباً في مجموعتنا الشمسية؟", options: ["7", "8", "9", "6"], correct: 1 },
-        { category: "🇪🇬 تاريخ", question: "ما هي الدولة التي تسمى 'أرض النيل'؟", options: ["السودان", "مصر", "أوغندا", "إثيوبيا"], correct: 1 },
-        { category: "⛰️ علوم", question: "ما هو الصخر الناتج عن تبريد الماغما أو اللافا؟", options: ["الصخر الرسوبي", "الصخر الناري", "الصخر المتحول", "الحجر الجيري"], correct: 1 }
+        { category: "🇪🇬 تاريخ", question: "ما الدولة التي تسمى أرض النيل؟", options: ["السودان", "مصر", "أوغندا", "إثيوبيا"], correct: 1 },
+        { category: "⛰️ علوم", question: "ما الصخر الناتج عن تبريد الماغما؟", options: ["رسوبي", "ناري", "متحول", "جيري"], correct: 1 }
     ];
 
     let currentQuestions = [...QUIZ_SET];
-    
-    let currentIndex = 0;
-    let userScore = 0;
-    let quizActive = true;
-    let answerLock = false;
-    let selectedOptionIdx = null;
-    let currentQuestionTimer = null;
-    let timeElapsedThisQuestion = 0;
-    let totalTimeTaken = 0;
-    let questionsAnsweredCount = 0;
-
-    let leaderboard = [];
+    let currentIndex = 0, userScore = 0, quizActive = true, answerLock = false;
+    let currentQuestionTimer = null, timeElapsed = 0, totalTimeTaken = 0, questionsCount = 0;
     let currentPlayer = null;
 
     const appContainer = document.getElementById('appRoot');
 
-    // حفظ و تحميل لوحة الصدارة (بدون أسماء وهمية)
-    function saveLeaderboardToLocal() {
-        localStorage.setItem('quizSuperLeaderboard', JSON.stringify(leaderboard));
+    // دالة لحفظ النتيجة في Supabase
+    async function saveScoreToSupabase(playerName, score, totalTime) {
+        try {
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/quiz_scores`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                },
+                body: JSON.stringify({
+                    player_name: playerName,
+                    score: score,
+                    total_time: totalTime
+                })
+            });
+            if (!response.ok) console.error("خطأ في الحفظ");
+        } catch(e) { console.error(e); }
     }
 
-    function loadLeaderboardFromLocal() {
-        const stored = localStorage.getItem('quizSuperLeaderboard');
-        if (stored) {
-            try {
-                leaderboard = JSON.parse(stored);
-                leaderboard = leaderboard.filter(e => e.playerName && typeof e.score === 'number');
-                leaderboard.sort((a,b) => (b.score - a.score) || (a.totalTimeSecs - b.totalTimeSecs));
-            } catch(e) { leaderboard = []; }
+    // دالة لجلب النتائج من Supabase
+    async function fetchLeaderboard() {
+        try {
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/quiz_scores?order=score.desc,id.asc&limit=20`, {
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                }
+            });
+            if (!response.ok) return [];
+            return await response.json();
+        } catch(e) {
+            console.error(e);
+            return [];
         }
-        // تم إزالة جميع الأسماء الوهمية - اللوحة تبدأ فارغة تماماً
-        if (!leaderboard.length) {
-            leaderboard = []; // فارغة بدون عينات
-            saveLeaderboardToLocal();
-        }
-    }
-
-    function addCurrentPlayerToLeaderboard() {
-        if (!currentPlayer || questionsAnsweredCount === 0) return;
-        const finalScore = userScore;
-        const newEntry = { playerName: currentPlayer, score: finalScore, totalTimeSecs: totalTimeTaken };
-        const existingIdx = leaderboard.findIndex(entry => entry.playerName === currentPlayer);
-        if (existingIdx !== -1) {
-            const old = leaderboard[existingIdx];
-            if (finalScore > old.score || (finalScore === old.score && totalTimeTaken < old.totalTimeSecs)) {
-                leaderboard[existingIdx] = newEntry;
-            }
-        } else {
-            leaderboard.push(newEntry);
-        }
-        leaderboard.sort((a,b) => (b.score - a.score) || (a.totalTimeSecs - b.totalTimeSecs));
-        if (leaderboard.length > 15) leaderboard = leaderboard.slice(0,15);
-        saveLeaderboardToLocal();
     }
 
     function shuffleArray(arr) {
@@ -440,60 +411,45 @@
         }
     }
 
-    function stopTimer() {
-        if (currentQuestionTimer) {
-            clearInterval(currentQuestionTimer);
-            currentQuestionTimer = null;
-        }
-    }
-
-    function startTimerForCurrentQuestion() {
-        if (currentQuestionTimer) stopTimer();
-        timeElapsedThisQuestion = 0;
+    function stopTimer() { if (currentQuestionTimer) { clearInterval(currentQuestionTimer); currentQuestionTimer = null; } }
+    function startTimer() {
+        stopTimer();
+        timeElapsed = 0;
         updateTimerDisplay();
         currentQuestionTimer = setInterval(() => {
             if (!quizActive || answerLock || currentIndex >= currentQuestions.length) return;
-            if (!answerLock && quizActive) {
-                timeElapsedThisQuestion++;
-                updateTimerDisplay();
-            }
+            timeElapsed++;
+            updateTimerDisplay();
         }, 1000);
     }
+    function updateTimerDisplay() { const span = document.getElementById('questionTimer'); if(span) span.innerText = `${timeElapsed}s`; }
 
-    function updateTimerDisplay() {
-        const timerSpan = document.getElementById('questionTimer');
-        if (timerSpan) timerSpan.innerText = `${timeElapsedThisQuestion}s`;
-    }
-
-    function onSelectAnswer(optionIndex) {
+    async function onSelectAnswer(optionIndex) {
         if (!quizActive || answerLock || currentIndex >= currentQuestions.length) return;
         const currentQ = currentQuestions[currentIndex];
         const isCorrect = (optionIndex === currentQ.correct);
         answerLock = true;
-        selectedOptionIdx = optionIndex;
-        
-        totalTimeTaken += timeElapsedThisQuestion;
-        questionsAnsweredCount++;
+        totalTimeTaken += timeElapsed;
+        questionsCount++;
         if (isCorrect) userScore++;
         
         renderFeedbackAndNext(optionIndex, currentQ.correct);
         
-        setTimeout(() => {
+        setTimeout(async () => {
             if (currentIndex + 1 < currentQuestions.length) {
                 currentIndex++;
                 answerLock = false;
-                selectedOptionIdx = null;
-                timeElapsedThisQuestion = 0;
+                timeElapsed = 0;
                 stopTimer();
-                startTimerForCurrentQuestion();
+                startTimer();
                 renderQuizPanel();
             } else {
                 quizActive = false;
                 answerLock = true;
                 stopTimer();
-                addCurrentPlayerToLeaderboard();
-                renderQuizPanel();
-                renderLeaderboard();
+                await saveScoreToSupabase(currentPlayer, userScore, totalTimeTaken);
+                await renderQuizPanel();
+                await renderLeaderboard();
             }
         }, 1300);
     }
@@ -510,24 +466,23 @@
             return `<div class="option-btn ${cls} disabled-btn"><span class="option-prefix">${prefix}</span><span>${opt}</span></div>`;
         }).join('');
         container.innerHTML = `
-            <div class="quiz-meta"><div class="category-badge">${q.category}</div><div class="score-timer"><div class="score-box"><span>⭐ النقاط</span> <span>${userScore}</span></div><div class="timer-box"><span>⏱️ الوقت</span> <span>${timeElapsedThisQuestion}s</span></div></div></div>
+            <div class="quiz-meta"><div class="category-badge">${q.category}</div><div class="score-timer"><div class="score-box"><span>⭐ النقاط</span> <span>${userScore}</span></div><div class="timer-box"><span>⏱️ الوقت</span> <span>${timeElapsed}s</span></div></div></div>
             <div class="question-text">${q.question}</div><div class="options-grid">${optionsHtml}</div>
             <button class="next-btn" disabled>⏳ جاري الانتقال...</button>
-            <div class="quiz-footer">⚡ سرعة الإجابة تمنحك مكانة مميزة</div>
         `;
     }
 
-    function renderQuizPanel() {
+    async function renderQuizPanel() {
         const quizPanelDiv = document.querySelector('.quiz-panel');
         if (!quizPanelDiv) return;
         if (!quizActive || currentIndex >= currentQuestions.length) {
             quizPanelDiv.innerHTML = `
                 <div style="text-align:center; padding:1rem;">
-                    <div style="font-size:3rem;">🏁</div>
+                    <div style="font-size:3rem;">🏆</div>
                     <h2 style="color:#facc15;">انتهى التحدي!</h2>
-                    <p style="font-size:1.5rem; margin:1rem 0;">${userScore} / ${currentQuestions.length}</p>
+                    <p style="font-size:1.5rem;">${userScore} / ${currentQuestions.length}</p>
                     <p>الزمن الكلي: ${totalTimeTaken} ثانية</p>
-                    <button id="restartQuizBtn" class="next-btn" style="background:#facc15;">🔄 بدء اختبار جديد</button>
+                    <button id="restartQuizBtn" class="next-btn">🔄 بدء اختبار جديد</button>
                 </div>
             `;
             const restartBtn = document.getElementById('restartQuizBtn');
@@ -540,10 +495,9 @@
             return `<div class="option-btn" data-opt-index="${idx}"><span class="option-prefix">${prefix}</span><span>${opt}</span></div>`;
         }).join('');
         quizPanelDiv.innerHTML = `
-            <div class="quiz-meta"><div class="category-badge">${q.category}</div><div class="score-timer"><div class="score-box"><span>⭐ النقاط</span> <span>${userScore}</span></div><div class="timer-box"><span>⏱️ زمن السؤال</span> <span id="questionTimer">${timeElapsedThisQuestion}s</span></div></div></div>
+            <div class="quiz-meta"><div class="category-badge">${q.category}</div><div class="score-timer"><div class="score-box"><span>⭐ النقاط</span> <span>${userScore}</span></div><div class="timer-box"><span>⏱️ زمن السؤال</span> <span id="questionTimer">${timeElapsed}s</span></div></div></div>
             <div class="question-text">${q.question}</div><div class="options-grid">${optionsHtml}</div>
             <button class="next-btn" disabled style="background:#475569;">✏️ اختر إجابة</button>
-            <div class="quiz-footer">🏆 أسرع إجابة صحيحة = صدارة مضمونة</div>
         `;
         const btns = quizPanelDiv.querySelectorAll('.option-btn');
         btns.forEach(btn => {
@@ -555,52 +509,49 @@
         updateTimerDisplay();
     }
 
-    function renderLeaderboard() {
+    async function renderLeaderboard() {
         const leaderDiv = document.querySelector('.leaderboard-panel');
         if (!leaderDiv) return;
-        if (leaderboard.length === 0) {
-            leaderDiv.innerHTML = `<div class="leaderboard-header">🏅 لوحة الصدارة 🏅</div><div class="leaderboard-empty">✨ لا توجد نتائج بعد. كن أول من يلعب ويظهر اسمه هنا! ✨</div><button id="resetLeaderBtn" class="reset-leaderboard">🗑️ إعادة تعيين اللوحة</button>`;
-            const resetBtn = document.getElementById('resetLeaderBtn');
-            if (resetBtn) resetBtn.onclick = () => { leaderboard = []; saveLeaderboardToLocal(); renderLeaderboard(); };
+        leaderDiv.innerHTML = `<div class="leaderboard-header">🏅 لوحة الصدارة العالمية 🏅</div><div class="loading">جاري التحميل...</div>`;
+        const scores = await fetchLeaderboard();
+        if (scores.length === 0) {
+            leaderDiv.innerHTML = `<div class="leaderboard-header">🏅 لوحة الصدارة العالمية 🏅</div><div class="leaderboard-empty">✨ لا توجد نتائج بعد. كن أول من يلعب! ✨</div>`;
             return;
         }
-        let listHtml = `<div class="leaderboard-header">📊 المتصدرون ⚡</div><ul class="leaderboard-list">`;
-        leaderboard.slice(0,10).forEach((entry, idx) => {
-            listHtml += `<li class="leaderboard-item"><div class="rank">${idx+1}</div><div class="player-name">${escapeHtml(entry.playerName)}</div><div class="player-score">${entry.score}</div><div class="player-time">⏱️ ${entry.totalTimeSecs}s</div></li>`;
+        let listHtml = `<div class="leaderboard-header">🌍 المتصدرون عالمياً ⚡</div><ul class="leaderboard-list">`;
+        scores.slice(0,15).forEach((entry, idx) => {
+            listHtml += `<li class="leaderboard-item"><div class="rank">${idx+1}</div><div class="player-name">${escapeHtml(entry.player_name)}</div><div class="player-score">${entry.score}</div><div class="player-time">⏱️ ${entry.total_time}s</div></li>`;
         });
-        listHtml += `</ul><button id="resetLeaderBtn" class="reset-leaderboard">🗑️ إعادة تعيين اللوحة</button>`;
+        listHtml += `</ul>`;
         leaderDiv.innerHTML = listHtml;
-        const resetBtn = document.getElementById('resetLeaderBtn');
-        if (resetBtn) resetBtn.onclick = () => { leaderboard = []; saveLeaderboardToLocal(); renderLeaderboard(); };
-    }
-
-    function resetQuizSession() {
-        if (currentQuestionTimer) stopTimer();
-        currentIndex = 0;
-        userScore = 0;
-        totalTimeTaken = 0;
-        questionsAnsweredCount = 0;
-        answerLock = false;
-        quizActive = true;
-        selectedOptionIdx = null;
-        timeElapsedThisQuestion = 0;
-        shuffleArray(currentQuestions);
-        startTimerForCurrentQuestion();
-        renderQuizPanel();
-        renderLeaderboard();
     }
 
     function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){return m==='&'?'&amp;':m==='<'?'&lt;':'&gt;';}); }
+
+    async function resetQuizSession() {
+        stopTimer();
+        currentIndex = 0;
+        userScore = 0;
+        totalTimeTaken = 0;
+        questionsCount = 0;
+        answerLock = false;
+        quizActive = true;
+        timeElapsed = 0;
+        shuffleArray(currentQuestions);
+        startTimer();
+        await renderQuizPanel();
+        await renderLeaderboard();
+    }
 
     function askPlayerName() {
         return new Promise((resolve) => {
             const overlay = document.createElement('div');
             overlay.className = 'name-overlay';
-            overlay.innerHTML = `<div class="name-card"><h3>✨ اختبر معلوماتك ✨</h3><p>سجل اسمك وتنافس على لوحة الصدارة</p><input type="text" id="playerNameInput" placeholder="اكتب اسمك" maxlength="20"><button id="confirmNameBtn">🚀 ابدأ التحدي</button></div>`;
+            overlay.innerHTML = `<div class="name-card"><h3>✨ اختبر معلوماتك ✨</h3><p>سجل اسمك وتنافس عالمياً!</p><input type="text" id="playerNameInput" placeholder="اكتب اسمك" maxlength="20"><button id="confirmNameBtn">🚀 ابدأ التحدي</button></div>`;
             document.body.appendChild(overlay);
             const input = overlay.querySelector('#playerNameInput');
             const btn = overlay.querySelector('#confirmNameBtn');
-            const start = () => { currentPlayer = input.value.trim() || "متنافس نشيط"; overlay.remove(); resolve(); };
+            const start = () => { currentPlayer = input.value.trim() || "متنافس"; overlay.remove(); resolve(); };
             btn.addEventListener('click', start);
             input.addEventListener('keypress', (e) => { if (e.key === 'Enter') start(); });
         });
@@ -608,18 +559,16 @@
 
     function buildUI() {
         appContainer.innerHTML = `
-            <div class="hero"><h1>🧠 تحدّي 15 سؤالاً مميزاً 🧠</h1><p>علوم، تاريخ، رياضة، ألغاز ... سارع وأجب بسرعة لتصدر القائمة!</p></div>
+            <div class="hero"><h1>🧠 تحدّي المعلومات العالمي 🧠</h1><p>تنافس مع لاعبين من جميع أنحاء العالم وسجل اسمك في لوحة الصدارة!</p></div>
             <div class="dashboard"><div class="quiz-panel"></div><div class="leaderboard-panel"></div></div>
         `;
     }
 
     async function init() {
         buildUI();
-        loadLeaderboardFromLocal();  // ستكون فارغة تماماً بدون أسماء وهمية
         await askPlayerName();
         shuffleArray(currentQuestions);
-        resetQuizSession();
-        renderLeaderboard();  // تظهر رسالة "لا توجد نتائج بعد"
+        await resetQuizSession();
     }
     init();
 </script>
