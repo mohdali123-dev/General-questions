@@ -2,344 +2,64 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>اختبر معلوماتك | لوحة صدارة عالمية</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', 'Tajawal', system-ui, 'Cairo', sans-serif;
-        }
-
-        body {
-            background: linear-gradient(145deg, #0b1120 0%, #111827 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem 1rem;
-        }
-
-        .app-container {
-            max-width: 1300px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        .hero {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .hero h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, #fbbf24, #ff7b2c);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-        }
-
-        .hero p {
-            color: #9ca3af;
-            font-size: 1.1rem;
-            margin-top: 0.5rem;
-        }
-
-        .dashboard {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.8rem;
-            justify-content: center;
-        }
-
-        .quiz-panel {
-            flex: 2;
-            min-width: 280px;
-            background: rgba(17, 24, 39, 0.8);
-            backdrop-filter: blur(12px);
-            border-radius: 2rem;
-            padding: 1.8rem;
-            border: 1px solid rgba(251, 191, 36, 0.4);
-        }
-
-        .leaderboard-panel {
-            flex: 1.2;
-            min-width: 260px;
-            background: rgba(0, 0, 0, 0.55);
-            backdrop-filter: blur(8px);
-            border-radius: 2rem;
-            padding: 1.5rem;
-            border: 1px solid #374151;
-        }
-
-        .quiz-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            flex-wrap: wrap;
-            margin-bottom: 2rem;
-            gap: 1rem;
-            border-bottom: 1px dashed #334155;
-            padding-bottom: 1rem;
-        }
-
-        .category-badge {
-            background: #facc15;
-            color: #0f172a;
-            font-weight: bold;
-            padding: 0.3rem 1.2rem;
-            border-radius: 40px;
-            font-size: 0.85rem;
-        }
-
-        .score-timer {
-            display: flex;
-            gap: 1.2rem;
-        }
-
-        .score-box, .timer-box {
-            background: #0f172a;
-            padding: 0.3rem 1rem;
-            border-radius: 2rem;
-            font-weight: bold;
-        }
-
-        .score-box span:first-child, .timer-box span:first-child {
-            color: #94a3b8;
-            font-size: 0.8rem;
-        }
-
-        .score-box span:last-child, .timer-box span:last-child {
-            color: #facc15;
-            font-size: 1.3rem;
-            font-weight: 800;
-            margin-right: 0.3rem;
-        }
-
-        .question-text {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #f1f5f9;
-            margin: 1.5rem 0 1.8rem 0;
-            line-height: 1.4;
-        }
-
-        .options-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 0.9rem;
-            margin-bottom: 2rem;
-        }
-
-        .option-btn {
-            background: #1e293b;
-            border: 2px solid #334155;
-            border-radius: 1.2rem;
-            padding: 0.9rem 1.2rem;
-            text-align: right;
-            font-size: 1rem;
-            font-weight: 500;
-            color: #e2e8f0;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .option-btn:hover:not(:disabled) {
-            background: #2d3a5e;
-            border-color: #facc15;
-            transform: scale(0.99);
-        }
-
-        .option-prefix {
-            font-weight: 800;
-            color: #facc15;
-            margin-left: 0.8rem;
-        }
-
-        .option-btn.correct-highlight {
-            background: #15803d;
-            border-color: #4ade80;
-            color: white;
-        }
-
-        .option-btn.wrong-highlight {
-            background: #b91c1c;
-            border-color: #f87171;
-            color: white;
-        }
-
-        .disabled-btn {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-
-        .next-btn {
-            background: linear-gradient(95deg, #facc15, #f59e0b);
-            border: none;
-            width: 100%;
-            padding: 0.9rem;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-radius: 2rem;
-            color: #0f172a;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 5px 0 #b45309;
-            margin-top: 0.5rem;
-        }
-
-        .next-btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #b45309;
-        }
-
-        .next-btn:disabled {
-            opacity: 0.5;
-            transform: none;
-            cursor: default;
-        }
-
-        .quiz-footer {
-            margin-top: 1.8rem;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #64748b;
-        }
-
-        .leaderboard-header {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #facc15;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        .leaderboard-list {
-            list-style: none;
-            max-height: 380px;
-            overflow-y: auto;
-            margin: 1rem 0;
-        }
-
-        .leaderboard-item {
-            background: #0f172a;
-            margin: 0.6rem 0;
-            padding: 0.7rem 1rem;
-            border-radius: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 0.7rem;
-            border-right: 3px solid #facc15;
-        }
-
-        .rank {
-            font-size: 1.3rem;
-            font-weight: 800;
-            width: 35px;
-            color: #facc15;
-        }
-
-        .player-name {
-            flex: 1;
-            color: #f1f5f9;
-            font-size: 0.95rem;
-        }
-
-        .player-score {
-            background: #0000004d;
-            padding: 0.2rem 0.6rem;
-            border-radius: 30px;
-            color: #facc15;
-            font-weight: bold;
-        }
-
-        .player-time {
-            font-size: 0.75rem;
-            color: #94a3b8;
-        }
-
-        .leaderboard-empty {
-            text-align: center;
-            color: #9ca3af;
-            padding: 2rem 1rem;
-            font-style: italic;
-            background: #0f172a;
-            border-radius: 1rem;
-            margin: 1rem 0;
-        }
-
-        .loading {
-            text-align: center;
-            color: #facc15;
-            padding: 1rem;
-        }
-
-        .name-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .name-card {
-            background: #1e293b;
-            border-radius: 2rem;
-            padding: 2rem;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            border: 1px solid #facc15;
-        }
-
-        .name-card h3 {
-            color: #facc15;
-            margin-bottom: 1rem;
-        }
-
-        .name-card input {
-            width: 100%;
-            padding: 0.8rem;
-            border-radius: 2rem;
-            border: none;
-            background: #0f172a;
-            color: white;
-            font-size: 1rem;
-            text-align: center;
-            margin: 1rem 0;
-        }
-
-        .name-card button {
-            background: #facc15;
-            border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 2rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        @media (max-width: 750px) {
-            .question-text { font-size: 1.2rem; }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Cairo', sans-serif; }
+        body { background: linear-gradient(145deg, #0b1120 0%, #111827 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 2rem 1rem; }
+        .app-container { max-width: 1300px; width: 100%; margin: 0 auto; }
+        .hero { text-align: center; margin-bottom: 2rem; }
+        .hero h1 { font-size: 2.5rem; background: linear-gradient(135deg, #fbbf24, #ff7b2c); background-clip: text; -webkit-background-clip: text; color: transparent; }
+        .hero p { color: #9ca3af; font-size: 1.1rem; }
+        .dashboard { display: flex; flex-wrap: wrap; gap: 1.8rem; justify-content: center; }
+        .quiz-panel { flex: 2; min-width: 280px; background: rgba(17, 24, 39, 0.8); backdrop-filter: blur(12px); border-radius: 2rem; padding: 1.8rem; border: 1px solid rgba(251, 191, 36, 0.4); }
+        .leaderboard-panel { flex: 1.2; min-width: 260px; background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(8px); border-radius: 2rem; padding: 1.5rem; border: 1px solid #374151; }
+        .quiz-meta { display: flex; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; border-bottom: 1px dashed #334155; padding-bottom: 1rem; }
+        .category-badge { background: #facc15; color: #0f172a; font-weight: bold; padding: 0.3rem 1.2rem; border-radius: 40px; }
+        .score-timer { display: flex; gap: 1.2rem; }
+        .score-box, .timer-box { background: #0f172a; padding: 0.3rem 1rem; border-radius: 2rem; }
+        .score-box span:first-child, .timer-box span:first-child { color: #94a3b8; font-size: 0.8rem; }
+        .score-box span:last-child, .timer-box span:last-child { color: #facc15; font-size: 1.3rem; font-weight: 800; margin-right: 0.3rem; }
+        .question-text { font-size: 1.6rem; font-weight: 700; color: #f1f5f9; margin: 1.5rem 0 1.8rem; line-height: 1.4; }
+        .options-grid { display: flex; flex-direction: column; gap: 0.9rem; margin-bottom: 2rem; }
+        .option-btn { background: #1e293b; border: 2px solid #334155; border-radius: 1.2rem; padding: 0.9rem 1.2rem; text-align: right; font-size: 1rem; font-weight: 500; color: #e2e8f0; cursor: pointer; transition: all 0.2s; display: flex; justify-content: space-between; }
+        .option-btn:hover:not(:disabled) { background: #2d3a5e; border-color: #facc15; transform: scale(0.99); }
+        .option-prefix { font-weight: 800; color: #facc15; margin-left: 0.8rem; }
+        .option-btn.correct-highlight { background: #15803d; border-color: #4ade80; color: white; }
+        .option-btn.wrong-highlight { background: #b91c1c; border-color: #f87171; color: white; }
+        .disabled-btn { opacity: 0.7; cursor: not-allowed; }
+        .next-btn { background: linear-gradient(95deg, #facc15, #f59e0b); border: none; width: 100%; padding: 0.9rem; font-size: 1.2rem; font-weight: bold; border-radius: 2rem; color: #0f172a; cursor: pointer; margin-top: 0.5rem; box-shadow: 0 5px 0 #b45309; }
+        .next-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b45309; }
+        .next-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+        .leaderboard-header { font-size: 1.5rem; font-weight: bold; color: #facc15; text-align: center; margin-bottom: 1rem; }
+        .leaderboard-list { list-style: none; max-height: 380px; overflow-y: auto; margin: 1rem 0; }
+        .leaderboard-item { background: #0f172a; margin: 0.6rem 0; padding: 0.7rem 1rem; border-radius: 1.2rem; display: flex; align-items: center; gap: 0.7rem; border-right: 3px solid #facc15; }
+        .rank { font-size: 1.3rem; font-weight: 800; width: 35px; color: #facc15; }
+        .player-name { flex: 1; color: #f1f5f9; font-weight: 500; }
+        .player-score { background: #0000004d; padding: 0.2rem 0.6rem; border-radius: 30px; color: #facc15; font-weight: bold; }
+        .player-time { font-size: 0.75rem; color: #94a3b8; }
+        .leaderboard-empty { text-align: center; color: #9ca3af; padding: 2rem; background: #0f172a; border-radius: 1rem; margin: 1rem 0; }
+        .loading { text-align: center; color: #facc15; padding: 1rem; }
+        .error-msg { text-align: center; color: #f87171; padding: 1rem; background: #7f1d1d; border-radius: 1rem; margin: 1rem 0; }
+        .name-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(8px); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .name-card { background: #1e293b; border-radius: 2rem; padding: 2rem; width: 90%; max-width: 400px; text-align: center; border: 1px solid #facc15; }
+        .name-card h3 { color: #facc15; margin-bottom: 1rem; }
+        .name-card input { width: 100%; padding: 0.8rem; border-radius: 2rem; border: none; background: #0f172a; color: white; font-size: 1rem; text-align: center; margin: 1rem 0; }
+        .name-card button { background: #facc15; border: none; padding: 0.7rem 1.5rem; border-radius: 2rem; font-weight: bold; cursor: pointer; }
+        @media (max-width: 750px) { .question-text { font-size: 1.2rem; } }
     </style>
 </head>
 <body>
 <div class="app-container" id="appRoot"></div>
 
 <script>
-    // ================== إعدادات Supabase (ضع قيمك هنا) ==================
-    const SUPABASE_URL = "https://tpnzhzpydszmiwncckk.supabase.co";  // ضع Project URL هنا
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRwem5oenBweWRzem1pd25jY2trIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxOTU2NDYsImV4cCI6MjA5Mzc3MTY0Nn0.TuDJt3dygykmL4_G7H4iQ3wJSxUgjSRtaDM8T3dKkQs";  // ضع anon key هنا
+    // ================== ⚠️ ضع مفتاحك الحقيقي هنا ⚠️ ==================
+    // اذهب إلى: https://supabase.com/dashboard/projects/tpnzhzpydszmiwncckk/settings/api
+    // انسخ المفتاح الذي بجانب "anon" (سلسلة طويلة جداً) والصقه هنا:
+    
+    const SUPABASE_URL = "https://tpnzhzpydszmiwncckk.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRwem5oenBweWRzem1pd25jY2trIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxOTU2NDYsImV4cCI6MjA5Mzc3MTY0Nn0.TuDJt3dygykmL4_G7H4iQ3wJSxUgjSRtaDM8T3dKkQs";  // <-- استبدل هذا بالمفتاح الحقيقي
+    
     // ==================================================================
 
     const QUIZ_SET = [
@@ -367,7 +87,6 @@
 
     const appContainer = document.getElementById('appRoot');
 
-    // دالة لحفظ النتيجة في Supabase
     async function saveScoreToSupabase(playerName, score, totalTime) {
         try {
             const response = await fetch(`${SUPABASE_URL}/rest/v1/quiz_scores`, {
@@ -375,7 +94,8 @@
                 headers: {
                     'Content-Type': 'application/json',
                     'apikey': SUPABASE_ANON_KEY,
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'Prefer': 'return=minimal'
                 },
                 body: JSON.stringify({
                     player_name: playerName,
@@ -383,14 +103,22 @@
                     total_time: totalTime
                 })
             });
-            if (!response.ok) console.error("خطأ في الحفظ");
-        } catch(e) { console.error(e); }
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error("خطأ في الحفظ:", errorText);
+                return false;
+            }
+            console.log("✅ تم حفظ النتيجة بنجاح!");
+            return true;
+        } catch(e) { 
+            console.error("❌ خطأ في الاتصال:", e); 
+            return false;
+        }
     }
 
-    // دالة لجلب النتائج من Supabase
     async function fetchLeaderboard() {
         try {
-            const response = await fetch(`${SUPABASE_URL}/rest/v1/quiz_scores?order=score.desc,id.asc&limit=20`, {
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/quiz_scores?order=score.desc,total_time.asc&limit=20`, {
                 headers: {
                     'apikey': SUPABASE_ANON_KEY,
                     'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
@@ -447,7 +175,8 @@
                 quizActive = false;
                 answerLock = true;
                 stopTimer();
-                await saveScoreToSupabase(currentPlayer, userScore, totalTimeTaken);
+                const saved = await saveScoreToSupabase(currentPlayer, userScore, totalTimeTaken);
+                if(saved) console.log("تم حفظ النتيجة في اللوحة العالمية!");
                 await renderQuizPanel();
                 await renderLeaderboard();
             }
@@ -512,18 +241,22 @@
     async function renderLeaderboard() {
         const leaderDiv = document.querySelector('.leaderboard-panel');
         if (!leaderDiv) return;
-        leaderDiv.innerHTML = `<div class="leaderboard-header">🏅 لوحة الصدارة العالمية 🏅</div><div class="loading">جاري التحميل...</div>`;
-        const scores = await fetchLeaderboard();
-        if (scores.length === 0) {
-            leaderDiv.innerHTML = `<div class="leaderboard-header">🏅 لوحة الصدارة العالمية 🏅</div><div class="leaderboard-empty">✨ لا توجد نتائج بعد. كن أول من يلعب! ✨</div>`;
-            return;
+        leaderDiv.innerHTML = `<div class="leaderboard-header">🏅 لوحة الصدارة العالمية 🏅</div><div class="loading">⏳ جاري التحميل...</div>`;
+        try {
+            const scores = await fetchLeaderboard();
+            if (scores.length === 0) {
+                leaderDiv.innerHTML = `<div class="leaderboard-header">🏅 لوحة الصدارة العالمية 🏅</div><div class="leaderboard-empty">✨ لا توجد نتائج بعد. كن أول من يلعب! ✨</div>`;
+                return;
+            }
+            let listHtml = `<div class="leaderboard-header">🌍 المتصدرون عالمياً ⚡</div><ul class="leaderboard-list">`;
+            scores.slice(0,15).forEach((entry, idx) => {
+                listHtml += `<li class="leaderboard-item"><div class="rank">${idx+1}</div><div class="player-name">${escapeHtml(entry.player_name)}</div><div class="player-score">${entry.score} / 15</div><div class="player-time">⏱️ ${entry.total_time} ث</div></li>`;
+            });
+            listHtml += `</ul>`;
+            leaderDiv.innerHTML = listHtml;
+        } catch(e) {
+            leaderDiv.innerHTML = `<div class="leaderboard-header">🏅 لوحة الصدارة العالمية 🏅</div><div class="error-msg">⚠️ خطأ في الاتصال بقاعدة البيانات</div>`;
         }
-        let listHtml = `<div class="leaderboard-header">🌍 المتصدرون عالمياً ⚡</div><ul class="leaderboard-list">`;
-        scores.slice(0,15).forEach((entry, idx) => {
-            listHtml += `<li class="leaderboard-item"><div class="rank">${idx+1}</div><div class="player-name">${escapeHtml(entry.player_name)}</div><div class="player-score">${entry.score}</div><div class="player-time">⏱️ ${entry.total_time}s</div></li>`;
-        });
-        listHtml += `</ul>`;
-        leaderDiv.innerHTML = listHtml;
     }
 
     function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){return m==='&'?'&amp;':m==='<'?'&lt;':'&gt;';}); }
